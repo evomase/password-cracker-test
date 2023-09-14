@@ -25,6 +25,6 @@ RUN apk update && apk upgrade && \
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 
 RUN chmod +x /usr/local/bin/install-php-extensions && \
-    install-php-extensions pdo pdo_mysql opcache @composer \
+    install-php-extensions pdo pdo_mysql opcache @composer
 
 WORKDIR /app
