@@ -1,0 +1,11 @@
+#!/usr/bin/env php
+<?php
+
+use Evomase\PasswordCrackerTest\Application;
+
+require __DIR__ . '/vendor/autoload.php';
+
+try {
+  Application::run();
+} catch (Exception $e) {
+}

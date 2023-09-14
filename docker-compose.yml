@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    tty: true
+
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+
+  db:
+    image: mariadb:10.3
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_USER: "root"
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_DATABASE: "password_cracker"
+    volumes:
+      - db:/var/lib/
+      - ./db/not_so_smart_users.sql:/docker-entrypoint-initdb.d/dump.sql
+
+volumes:
+  db:
