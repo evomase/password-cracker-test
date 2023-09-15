@@ -13,7 +13,7 @@ class Cracker {
 
   const CRACK_TYPE_UPPERCASE_NUMERIC = '/^[A-Z0-9]+$/';
 
-  const CRACK_TYPE_DICTIONARY = '^/[a-z]+$/';
+  const CRACK_TYPE_DICTIONARY = '/^[a-z]+$/';
 
   const CRACK_TYPE_MIX = '/^[a-zA-Z0-9]+$/';
 
