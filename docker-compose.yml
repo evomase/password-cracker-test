@@ -6,7 +6,6 @@ services:
       context: .
       dockerfile: Dockerfile
     tty: true
-
     volumes:
       - .:/app
     depends_on:

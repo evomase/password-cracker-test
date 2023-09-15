@@ -6,6 +6,7 @@ You would need to have Docker and Docker Compose installed on the machine. Run t
 
 ```bash
 docker compose up -d
+docker compose exec php composer install
 ```
 
 ### How to run the password cracker
