@@ -8,7 +8,6 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Helper\Table;
-use Symfony\Component\Console\Helper\TableSeparator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -45,14 +44,12 @@ class CrackCommand extends Command {
 
     $table = $this->createTable($output);
 
-    $this->addUsers($table, (new Cracker($this->connection, new ConsoleLogger($output), $progressBar))->find(4));
-    $this->addUsers($table, (new Cracker($this->connection, new ConsoleLogger($output), $progressBar))->find(4, Cracker::CRACK_TYPE_UPPERCASE_NUMERIC, 4));
-    $this->addUsers($table, (new Cracker($this->connection, new ConsoleLogger($output), $progressBar))->find(12, Cracker::CRACK_TYPE_DICTIONARY, 6));
-    $this->addUsers($table, (new Cracker($this->connection, new ConsoleLogger($output), $progressBar))->find(12, Cracker::CRACK_TYPE_MIX, 6));
+    $this->addUsers($table, $output, (new Cracker($this->connection, new ConsoleLogger($output), $progressBar))->find(4));
+    $this->addUsers($table, $output, (new Cracker($this->connection, new ConsoleLogger($output), $progressBar))->find(4, Cracker::CRACK_TYPE_UPPERCASE_NUMERIC, 4));
+    $this->addUsers($table, $output, (new Cracker($this->connection, new ConsoleLogger($output), $progressBar))->find(12, Cracker::CRACK_TYPE_DICTIONARY, 6));
+    $this->addUsers($table, $output, (new Cracker($this->connection, new ConsoleLogger($output), $progressBar))->find(12, Cracker::CRACK_TYPE_MIX, 6));
 
     $progressBar->finish();
-    $output->writeln('');
-    $table->render();
 
     return 0;
   }
@@ -85,16 +82,19 @@ class CrackCommand extends Command {
 
   /**
    * @param \Symfony\Component\Console\Helper\Table $table
+   * @param \Symfony\Component\Console\Output\OutputInterface $output
    * @param array $users
    *
    * @return void
    */
-  private function addUsers(Table $table, array $users): void {
+  private function addUsers(Table $table, OutputInterface $output, array $users): void {
     foreach ($users as $user) {
       $table->addRow([$user]);
     }
 
-    $table->addRow(new TableSeparator());
+    $output->writeln('');
+    $table->render();
+    $output->writeln("\n\n");
   }
 
 }
