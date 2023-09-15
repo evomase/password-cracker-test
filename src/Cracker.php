@@ -19,6 +19,8 @@ class Cracker {
 
   const SALT = 'ThisIs-A-Salt123';
 
+  const DICTIONARY_FILE = __DIR__ . '/../data/en_GB-large.dic';
+
   const CHARACTERS = [
     self::CRACK_TYPE_NUMBERS => '0123456789',
     self::CRACK_TYPE_UPPERCASE_NUMERIC => 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
@@ -42,6 +44,8 @@ class Cracker {
   private ProgressBar $progressBar;
 
   private bool $startMessageSent = FALSE;
+
+  private array $dictionary = [];
 
   /**
    * @param \Doctrine\DBAL\Connection $connection
@@ -99,7 +103,7 @@ class Cracker {
     unset($generatedPasswords);
     unset($passwords);
 
-    $this->progressBar->setMessage(sprintf('Found users.. %s', implode(', ', $users)));
+    $this->renderMessage(sprintf('Found users.. %s', implode(', ', $users)));
     $this->progressBar->advance();
 
     return $users;
@@ -125,6 +129,10 @@ class Cracker {
   private function generatePassword(string $type, array $characters, int $charLength, int $length): string {
     $password = '';
 
+    if ($type === self::CRACK_TYPE_DICTIONARY && $password = $this->generateDictionaryPassword($length)) {
+      return $password;
+    }
+
     if ($type === self::CRACK_TYPE_UPPERCASE_NUMERIC) {
       $length--;
     }
@@ -139,6 +147,42 @@ class Cracker {
     }
 
     return $password;
+  }
+
+  /**
+   * @param int $length
+   *
+   * @return string
+   */
+  private function generateDictionaryPassword(int $length): string {
+    static $pointer = 0;
+
+    if (empty($this->dictionary)) {
+      $this->loadDictionary($length);
+    }
+
+    if (empty($this->dictionary[$pointer])) {
+      return '';
+    }
+
+    $password = strtolower($this->dictionary[$pointer]);
+    $pointer++;
+
+    return $password;
+  }
+
+  /**
+   * @param int $length
+   *
+   * @return void
+   */
+  private function loadDictionary(int $length): void {
+    if (empty($this->dictionary)) {
+      $this->dictionary = array_values(array_filter(explode("\n", file_get_contents(self::DICTIONARY_FILE)),
+        function ($word) use ($length) {
+          return !empty($word) && strlen($word) <= $length;
+        }));
+    }
   }
 
   /**
@@ -174,22 +218,31 @@ class Cracker {
 
       switch ($type) {
         case self::CRACK_TYPE_NUMBERS:
-          $this->progressBar->setMessage($message . 'The 4 user IDs who used 5 numbers as their passwords.');
+          $this->renderMessage($message . 'The 4 user IDs who used 5 numbers as their passwords.');
           break;
         case self::CRACK_TYPE_UPPERCASE_NUMERIC:
-          $this->progressBar->setMessage($message . 'The 4 user IDs who used just 3 Uppercase characters and 1 number as their password.');
+          $this->renderMessage($message . 'The 4 user IDs who used just 3 Uppercase characters and 1 number as their password.');
           break;
         case self::CRACK_TYPE_DICTIONARY:
-          $this->progressBar->setMessage($message . 'The 12 user IDs who used just lowercase dictionary words (Max 6 chars) as their passwords.');
+          $this->renderMessage($message . 'The 12 user IDs who used just lowercase dictionary words (Max 6 chars) as their passwords.');
           break;
         case self::CRACK_TYPE_MIX:
-          $this->progressBar->setMessage($message . 'The 2 user IDs who used a 6 character passwords using a mix of Upper, Lowercase and numbers');
+          $this->renderMessage($message . 'The 2 user IDs who used a 6 character passwords using a mix of Upper, Lowercase and numbers');
           break;
       }
 
-      $this->progressBar->display();
       $this->startMessageSent = TRUE;
     }
+  }
+
+  /**
+   * @param string $message
+   *
+   * @return void
+   */
+  private function renderMessage(string $message): void {
+    $this->progressBar->setMessage($message);
+    $this->progressBar->display();
   }
 
 }
