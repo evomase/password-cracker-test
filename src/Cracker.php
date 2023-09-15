@@ -19,7 +19,7 @@ class Cracker {
 
   const SALT = 'ThisIs-A-Salt123';
 
-  const DICTIONARY_FILE = __DIR__ . '/../data/en_GB-large.dic';
+  const DICTIONARY_FILE = __DIR__ . '/../data/words.txt';
 
   const CHARACTERS = [
     self::CRACK_TYPE_NUMBERS => '0123456789',
