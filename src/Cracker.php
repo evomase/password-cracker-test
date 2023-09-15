@@ -157,11 +157,12 @@ class Cracker {
   private function generateDictionaryPassword(int $length): string {
     static $pointer = 0;
 
-    if (empty($this->dictionary)) {
+    if (empty($this->dictionary) && $pointer === 0) {
       $this->loadDictionary($length);
     }
 
     if (empty($this->dictionary[$pointer])) {
+      unset($this->dictionary);
       return '';
     }
 
