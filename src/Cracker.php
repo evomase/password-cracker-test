@@ -103,7 +103,7 @@ class Cracker {
     unset($generatedPasswords);
     unset($passwords);
 
-    $this->renderMessage(sprintf('Found users.. %s', implode(', ', $users)));
+    $this->logger->debug(sprintf('Found users.. %s', implode(', ', $users)));
     $this->progressBar->advance();
 
     return $users;
