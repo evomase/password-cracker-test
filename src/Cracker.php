@@ -105,6 +105,11 @@ class Cracker {
     return $users;
   }
 
+  /**
+   * @param $password
+   *
+   * @return string
+   */
   private function hash($password): string {
     return md5($password . self::SALT);
   }

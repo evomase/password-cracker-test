@@ -25,6 +25,9 @@ class CrackCommand extends Command {
    */
   private Connection $connection;
 
+  /**
+   * @param \Doctrine\DBAL\Connection $connection
+   */
   public function __construct(Connection $connection) {
     $this->connection = $connection;
 
@@ -72,6 +75,11 @@ class CrackCommand extends Command {
     return $progressBar;
   }
 
+  /**
+   * @param \Symfony\Component\Console\Output\OutputInterface $output
+   *
+   * @return \Symfony\Component\Console\Helper\Table
+   */
   private function createTable(OutputInterface $output): Table {
     $table = new Table($output);
     $table->setHeaders(['User ID']);
