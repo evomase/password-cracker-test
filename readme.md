@@ -17,4 +17,6 @@ Run the following command:
 docker compose exec php php crack
 ```
 
+Word dictionary downloaded from [https://github.com/dwyl/english-words](https://github.com/dwyl/english-words)
+
 :-)
